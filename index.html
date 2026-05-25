@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>EduMap Moldova — Vacanțe Didactice</title>
+    <meta name="description" content="Hartă interactivă a vacanțelor didactice din Moldova. Date despre instituțiile de învățământ care caută cadre didactice." />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="EduMap Moldova" />
+    <meta property="og:description" content="Hartă interactivă a vacanțelor didactice din Moldova." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="EduMap Moldova" />
+    <meta name="twitter:description" content="Hartă interactivă a vacanțelor didactice din Moldova." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+
+    <!-- SPA routing: restore path that was encoded by 404.html -->
+    <script>
+      (function () {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+        // Also handle the ?p= query param approach
+        var search = window.location.search;
+        if (search.slice(0, 3) === '?p=') {
+          var decoded = search.slice(3).replace(/~and~/g, '&');
+          var qIdx = decoded.indexOf('&q=');
+          var path = qIdx === -1 ? decoded : decoded.slice(0, qIdx);
+          var query = qIdx === -1 ? '' : '?' + decoded.slice(qIdx + 3).replace(/~and~/g, '&');
+          history.replaceState(null, null, path + query + window.location.hash);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
