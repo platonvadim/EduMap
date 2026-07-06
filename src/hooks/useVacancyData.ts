@@ -32,6 +32,19 @@ function normalizeVacancy(raw: unknown, cityKey: string, fallbackIndex: number):
   };
 }
 
+
+function publicAssetUrl(path: string): string {
+  const cleanPath = path.replace(/^\/+/, '');
+  const base = import.meta.env.BASE_URL || '/';
+
+  // Relative build for local file/static previews.
+  if (base === './' || base === '') {
+    return `${base}${cleanPath}`;
+  }
+
+  return `${base.replace(/\/$/, '')}/${cleanPath}`;
+}
+
 function flattenData(data: unknown): Vacancy[] {
   if (!isRecord(data)) {
     throw new Error('Fișierul de date nu are formatul așteptat.');
@@ -71,7 +84,7 @@ export function useVacancyData() {
       setDataError(null);
 
       try {
-        const res = await fetch(`${import.meta.env.BASE_URL}data/vacante_by_city.json`, {
+        const res = await fetch(publicAssetUrl('data/vacante_by_city.json'), {
           signal: controller.signal,
           cache: 'no-cache',
         });

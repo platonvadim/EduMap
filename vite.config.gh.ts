@@ -3,9 +3,9 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
-// Base path for GitHub Pages.
-// • Root custom domain  → leave VITE_BASE_PATH unset (defaults to "/")
-// • GitHub Pages subpath → set VITE_BASE_PATH="/repo-name/" in the Actions workflow
+// GitHub Pages:
+// - custom domain or user site: VITE_BASE_PATH="/"
+// - repository page: VITE_BASE_PATH="/repo-name/"
 const basePath = process.env.VITE_BASE_PATH ?? "/";
 
 export default defineConfig({
@@ -21,5 +21,6 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist"),
     emptyOutDir: true,
+    sourcemap: true,
   },
 });

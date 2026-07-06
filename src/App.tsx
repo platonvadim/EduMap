@@ -33,11 +33,17 @@ function Router() {
   );
 }
 
+function getRouterBase() {
+  const base = import.meta.env.BASE_URL;
+  if (!base || base === '/' || base === './') return '';
+  return base.replace(/\/$/, '');
+}
+
 function App() {
   return (
     <ErrorBoundary>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+        <WouterRouter base={getRouterBase()}>
           <Router />
         </WouterRouter>
         <Toaster />

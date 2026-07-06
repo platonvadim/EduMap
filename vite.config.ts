@@ -9,7 +9,11 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${process.env.PORT}"`);
 }
 
-const basePath = process.env.BASE_PATH ?? "/";
+// IMPORTANT:
+// - use "/" for normal hosting / custom domain / Netlify / Vercel
+// - use "/repo-name/" for GitHub Pages project pages
+// - use "./" only when you want to open dist/index.html directly from disk
+const basePath = process.env.VITE_BASE_PATH ?? process.env.BASE_PATH ?? "/";
 
 export default defineConfig({
   base: basePath,
@@ -22,8 +26,10 @@ export default defineConfig({
   },
   root: path.resolve(import.meta.dirname),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    // Keep one predictable output folder. The previous dist/public output was easy to deploy incorrectly.
+    outDir: path.resolve(import.meta.dirname, "dist"),
     emptyOutDir: true,
+    sourcemap: true,
   },
   server: {
     port,

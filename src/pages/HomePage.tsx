@@ -22,7 +22,7 @@ export default function HomePage() {
   return (
     <Layout>
       <div className="flex-1 flex relative w-full h-full">
-        <h1 className="sr-only">EduMap Moldova: hartă interactivă a locurolor vacante didactice</h1>
+        <h1 className="sr-only">EduMap Moldova: hartă interactivă a vacansiilor didactice</h1>
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col relative w-full h-full z-0">
 
@@ -32,6 +32,23 @@ export default function HomePage() {
               <FilterChips />
             </div>
           </div>
+
+          <section
+            aria-label="Rezumat hartă"
+            className="absolute top-[58px] left-3 right-3 md:top-[72px] md:left-5 md:right-auto md:w-[360px] z-10 rounded-xl border border-border/70 bg-card/90 backdrop-blur-md shadow-md px-4 py-3"
+          >
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Info size={15} strokeWidth={2} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-foreground">Vacansii didactice pe hartă</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  {stats.totalVacancies} posturi în {stats.citiesWithVacancies} localități. Date consultative, pot fi incomplete.
+                </p>
+              </div>
+            </div>
+          </section>
 
           {/* Map */}
           <div className="flex-1 w-full h-full relative">
@@ -46,7 +63,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <p className="mt-4 text-sm font-semibold text-foreground">Se încarcă harta și datele</p>
-                  <p className="mt-1 text-xs text-muted-foreground">Pregătim localitățile, filtrele și lista de vacansii.</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Pregătim localitățile, filtrele și lista de vacante.</p>
                 </div>
               </div>
             ) : dataError ? (
@@ -99,7 +116,7 @@ export default function HomePage() {
                   {searchResults.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
                       <Search className="w-10 h-10 mb-3 opacity-25" />
-                      <p className="font-medium">Nici un loc vacant găsit</p>
+                      <p className="font-medium">Nicio specialitate vacantă găsită</p>
                       <p className="text-xs mt-1">Încearcă alt termen</p>
                     </div>
                   ) : (
