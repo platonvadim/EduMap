@@ -15,6 +15,7 @@ export const cityCoordinates: Record<string, [number, number]> = {
   "Rîșcani": [47.9541, 27.5601],
   "Șoldănești": [47.8156, 28.7907],
   "Criuleni": [46.9853, 29.1565],
+  "Călărași": [47.2556, 28.3099],
   "Căușeni": [46.6388, 29.4108],
   "Anenii Noi": [46.8808, 29.2283],
   "Ștefan Vodă": [46.5213, 29.6601],
@@ -31,7 +32,6 @@ export const cityCoordinates: Record<string, [number, number]> = {
   "Ocnița": [48.4191, 27.4737],
   "Dondușeni": [48.2344, 27.5975],
   "Fălești": [47.5741, 27.7182],
-  "Râbnița": [47.7636, 29.0041],
-  "Tiraspol": [46.8422, 29.6289],
+  "UTA Găgăuzia": [46.3050, 28.6570],
   "Dubăsari": [47.2647, 29.1539],
 };

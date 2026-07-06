@@ -155,7 +155,7 @@ export function CitySidebar() {
                   </div>
                   <p className="text-sm text-muted-foreground pl-8">
                     <span className="font-bold text-primary">{cityVacancies.length}</span>
-                    {' '}vacanțe active
+                    {' '}vacante active
                     {cityVacancies[0]?.olsdi && (
                       <span className="ml-1.5 text-[11px] text-muted-foreground/70">· {cityVacancies[0].olsdi}</span>
                     )}
@@ -172,7 +172,7 @@ export function CitySidebar() {
 
               {/* Stat bento grid */}
               <div className="grid grid-cols-4 gap-2 mb-4">
-                <StatBento label="Vacanțe"    value={cityVacancies.length}       color="#6366f1" />
+                <StatBento label="Vacante"    value={cityVacancies.length}       color="#6366f1" />
                 <StatBento label="Instituții" value={stats.uniqueInstitutions}   color="#10b981" />
                 <StatBento label="Discipline" value={stats.uniqueSpecialties}    color="#8b5cf6" />
                 <StatBento label={stats.topTypeLabel} value={stats.topTypeCount} color="#f59e0b" />
@@ -217,7 +217,7 @@ export function CitySidebar() {
                     <Input
                       id="city-sidebar-search"
                       placeholder="Caută instituție sau disciplină..."
-                      aria-label="Caută în vacanțele localității"
+                      aria-label="Caută în vacansiile localității"
                       className="pl-9 h-8 text-sm bg-secondary/50 border-transparent focus:border-border rounded-lg"
                       value={localSearch}
                       onChange={e => setLocalSearch(e.target.value)}

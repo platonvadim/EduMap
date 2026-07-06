@@ -8,21 +8,30 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
-  const [isDark, setIsDark] = React.useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
+  const [isDark, setIsDark] = React.useState(() => {
+    const saved = window.localStorage.getItem("edumap-theme");
+    if (saved === "dark") {
+      document.documentElement.classList.add("dark");
+      return true;
+    }
+    if (saved === "light") {
+      document.documentElement.classList.remove("dark");
+      return false;
+    }
+    return document.documentElement.classList.contains("dark");
+  });
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const { setSearchQuery, setFilter, searchQuery } = useStore();
+  const { resetFilters, setSearchQuery, setFilter, searchQuery } = useStore();
   const isMapPage = location === "/";
 
   const toggleDark = () => {
     const isDarkMode = document.documentElement.classList.toggle("dark");
+    window.localStorage.setItem("edumap-theme", isDarkMode ? "dark" : "light");
     setIsDark(isDarkMode);
   };
 
   function handleMapClick() {
-    setSearchQuery("");
-    setFilter("category", null);
+    resetFilters();
     setMobileSearchOpen(false);
   }
 

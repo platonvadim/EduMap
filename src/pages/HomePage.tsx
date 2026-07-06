@@ -13,16 +13,16 @@ import { Info } from 'lucide-react';
 
 export default function HomePage() {
   useVacancyData();
-  const { isLoading, searchQuery, filters, setSearchQuery, setFilter } = useStore();
+  const { isLoading, dataError, searchQuery, filters, resetFilters } = useStore();
   const searchResults = useFuseSearch();
   const stats = useVacancyStats();
 
-  const isSearching = searchQuery.trim().length > 0 || filters.category !== null;
+  const isSearching = searchQuery.trim().length > 0 || filters.category !== null || filters.institutionType !== null || filters.city !== null;
 
   return (
     <Layout>
       <div className="flex-1 flex relative w-full h-full">
-        <h1 className="sr-only">EduMap Moldova: hartă interactivă a vacanțelor didactice</h1>
+        <h1 className="sr-only">EduMap Moldova: hartă interactivă a locurolor vacante didactice</h1>
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col relative w-full h-full z-0">
 
@@ -32,23 +32,6 @@ export default function HomePage() {
               <FilterChips />
             </div>
           </div>
-
-          <section
-            aria-label="Rezumat hartă"
-            className="absolute top-[58px] left-3 right-3 md:top-[72px] md:left-5 md:right-auto md:w-[360px] z-10 rounded-xl border border-border/70 bg-card/90 backdrop-blur-md shadow-md px-4 py-3"
-          >
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Info size={15} strokeWidth={2} />
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-foreground">Vacanțe didactice pe hartă</p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  {stats.totalVacancies} posturi în {stats.citiesWithVacancies} localități. Date consultative, pot fi incomplete.
-                </p>
-              </div>
-            </div>
-          </section>
 
           {/* Map */}
           <div className="flex-1 w-full h-full relative">
@@ -63,7 +46,20 @@ export default function HomePage() {
                     </div>
                   </div>
                   <p className="mt-4 text-sm font-semibold text-foreground">Se încarcă harta și datele</p>
-                  <p className="mt-1 text-xs text-muted-foreground">Pregătim localitățile, filtrele și lista de vacanțe.</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Pregătim localitățile, filtrele și lista de vacansii.</p>
+                </div>
+              </div>
+            ) : dataError ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-50 dark:bg-slate-900 z-20 px-4">
+                <div className="w-full max-w-md rounded-2xl border border-destructive/30 bg-card p-5 shadow-lg">
+                  <p className="text-sm font-bold text-destructive">Datele nu au putut fi încărcate</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{dataError}</p>
+                  <button
+                    className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                    onClick={() => window.location.reload()}
+                  >
+                    Reîncarcă pagina
+                  </button>
                 </div>
               </div>
             ) : (
@@ -82,11 +78,11 @@ export default function HomePage() {
                       Rezultate
                     </h2>
                     <p className="text-xs md:text-sm text-muted-foreground">
-                      {searchResults.length} vacanțe găsite
+                      {searchResults.length} vacante găsite
                     </p>
                   </div>
                   <button
-                    onClick={() => { setSearchQuery(""); setFilter("category", null); }}
+                    onClick={() => resetFilters()}
                     className="text-xs font-semibold text-primary underline-offset-2 hover:underline"
                   >
                     Înapoi la hartă
@@ -103,7 +99,7 @@ export default function HomePage() {
                   {searchResults.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
                       <Search className="w-10 h-10 mb-3 opacity-25" />
-                      <p className="font-medium">Nicio vacanță găsită</p>
+                      <p className="font-medium">Nici un loc vacant găsit</p>
                       <p className="text-xs mt-1">Încearcă alt termen</p>
                     </div>
                   ) : (

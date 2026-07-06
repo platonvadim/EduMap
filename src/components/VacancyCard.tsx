@@ -96,6 +96,17 @@ function DetailRow({ icon: Icon, label, value }: { icon: React.ElementType; labe
 
 export function VacancyCard({ vacancy }: { vacancy: Vacancy }) {
   const [open, setOpen] = useState(false);
+
+  function toggleOpen() {
+    setOpen((value) => !value);
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleOpen();
+    }
+  }
   const category = categorizeSpecialty(vacancy.specialty_name);
   const meta = CATEGORY_META[category];
   const Icon = meta.icon;
@@ -104,7 +115,11 @@ export function VacancyCard({ vacancy }: { vacancy: Vacancy }) {
     <motion.div
       layout
       data-testid={`vacancy-card-${vacancy.id}`}
-      onClick={() => setOpen(v => !v)}
+      role="button"
+      tabIndex={0}
+      aria-expanded={open}
+      onClick={toggleOpen}
+      onKeyDown={handleKeyDown}
       className={[
         'group relative rounded-xl border bg-card cursor-pointer overflow-hidden',
         'transition-all duration-200',
@@ -174,7 +189,7 @@ export function VacancyCard({ vacancy }: { vacancy: Vacancy }) {
                 <DetailRow icon={MapPin}       label="Localitate"      value={vacancy.city} />
                 <DetailRow icon={Building2}    label="OLSDI"           value={vacancy.olsdi} />
                 <DetailRow icon={Hash}         label="Cod specialitate" value={vacancy.specialty_code} />
-                <DetailRow icon={ExternalLink} label="ID Vacanță"      value={vacancy.id} />
+                <DetailRow icon={ExternalLink} label="ID Vacansie"      value={vacancy.id} />
               </div>
             </div>
           </motion.div>

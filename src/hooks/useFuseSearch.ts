@@ -1,57 +1,38 @@
 import { useMemo } from 'react';
 import Fuse from 'fuse.js';
 import { useStore } from '../store/useStore';
-import { Vacancy } from '../types';
-import { removeDiacritics } from '../utils/normalize';
+import { categorizeSpecialty, normalizeDisplayLabel, removeDiacritics } from '../utils/normalize';
 
 export function useFuseSearch() {
   const { vacancies, searchQuery, filters } = useStore();
 
   const filteredVacancies = useMemo(() => {
-    let result = vacancies;
-
-    if (filters.category) {
-      // filtering handled by categorizeSpecialty in real usage, 
-      // but let's keep it simple or implement if needed
-    }
-    
-    if (filters.institutionType) {
-      result = result.filter(v => v.institution_type === filters.institutionType);
-    }
-    
-    if (filters.city) {
-      result = result.filter(v => v.city === filters.city);
-    }
-
-    return result;
+    return vacancies.filter((v) => {
+      if (filters.category && categorizeSpecialty(v.specialty_name) !== filters.category) return false;
+      if (filters.institutionType && normalizeDisplayLabel(v.institution_type) !== normalizeDisplayLabel(filters.institutionType)) return false;
+      if (filters.city && v.city !== filters.city) return false;
+      return true;
+    });
   }, [vacancies, filters]);
 
   const fuse = useMemo(() => {
     return new Fuse(filteredVacancies, {
-      keys: [
-        'city',
-        'institution',
-        'institution_type',
-        'specialty_name',
-        'specialty_code'
-      ],
-      threshold: 0.3,
+      keys: ['city', 'institution', 'institution_type', 'specialty_name', 'specialty_code', 'olsdi'],
+      threshold: 0.32,
+      ignoreLocation: true,
+      includeScore: true,
       getFn: (obj, path) => {
         const value = Fuse.config.getFn(obj, path);
-        if (typeof value === 'string') {
-          return removeDiacritics(value);
-        }
+        if (typeof value === 'string') return removeDiacritics(value).toLowerCase();
         return value;
-      }
+      },
     });
   }, [filteredVacancies]);
 
-  const results = useMemo(() => {
-    if (!searchQuery.trim()) return filteredVacancies;
-    
-    const normalizedQuery = removeDiacritics(searchQuery);
-    return fuse.search(normalizedQuery).map(res => res.item);
-  }, [searchQuery, fuse, filteredVacancies]);
+  return useMemo(() => {
+    const query = searchQuery.trim();
+    if (!query) return filteredVacancies;
 
-  return results;
+    return fuse.search(removeDiacritics(query).toLowerCase()).map((res) => res.item);
+  }, [searchQuery, fuse, filteredVacancies]);
 }

@@ -114,7 +114,7 @@ def normalize_header(value: Any) -> str:
 
 def normalize_city(value: str) -> str:
     city = clean_text(value)
-    city = re.sub(r"^(OLSD[ÎI]|DGETS|DETS)\s+", "", city, flags=re.IGNORECASE)
+    city = re.sub(r"^(OLSD[ÎI]|OLDS[ÎI]|OLS[ÎI]|DGETS|DETS)\s+", "", city, flags=re.IGNORECASE)
     city = re.sub(r"^(mun\.|municipiul|r-nul|raionul)\s+", "", city, flags=re.IGNORECASE)
     city = city.strip(" ,.;:-")
 
