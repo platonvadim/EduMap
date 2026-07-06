@@ -8,8 +8,21 @@ import {
 } from 'recharts';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MapPin, BookOpen, Building2, GraduationCap, TrendingUp } from 'lucide-react';
+import { truncateLabel } from '../utils/normalize';
 
-const CHART_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#64748b', '#14b8a6', '#f43f5e'];
+const CHART_COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#be185d', '#475569', '#0891b2', '#b91c1c'];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  matematica: 'Matematică și științe exacte',
+  limbi: 'Limbi',
+  pedagogie: 'Pedagogie',
+  sport: 'Sport',
+  arte: 'Arte',
+  psihologie: 'Psihologie',
+  stiinte: 'Științe',
+  istorie: 'Istorie',
+  altele: 'Altele',
+};
 
 const TOOLTIP_STYLE = {
   borderRadius: '12px',
@@ -21,16 +34,17 @@ const TOOLTIP_STYLE = {
 };
 
 function KpiCard({
-  label, value, sub, icon: Icon, color,
+  label, value, sub, hint, icon: Icon, color,
 }: {
   label: string;
   value: string | number;
   sub?: string;
+  hint?: string;
   icon: React.ElementType;
   color: string;
 }) {
   return (
-    <div className="bg-card border border-border/60 rounded-2xl p-5 flex flex-col gap-3 hover:shadow-md hover:shadow-black/[0.05] transition-shadow">
+    <div className="bg-card border border-border/60 rounded-xl p-5 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-muted-foreground">{label}</p>
         <div
@@ -43,17 +57,31 @@ function KpiCard({
       <div>
         <p className="text-2xl font-bold tracking-tight text-foreground leading-none">{value}</p>
         {sub && <p className="text-xs text-muted-foreground mt-1.5">{sub}</p>}
+        {hint && <p className="text-[11px] text-muted-foreground/80 mt-2 leading-relaxed">{hint}</p>}
       </div>
     </div>
   );
 }
 
-function ChartCard({ title, children, className = '' }: { title: string; children: React.ReactNode; className?: string }) {
+function ChartCard({
+  title,
+  description,
+  children,
+  className = '',
+}: {
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className={`bg-card border border-border/60 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md hover:shadow-black/[0.05] transition-shadow ${className}`}>
-      <p className="text-sm font-bold text-foreground mb-5">{title}</p>
+    <section className={`bg-card border border-border/60 rounded-xl p-5 md:p-6 shadow-sm ${className}`}>
+      <div className="mb-5">
+        <h2 className="text-sm font-bold text-foreground">{title}</h2>
+        {description && <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{description}</p>}
+      </div>
       {children}
-    </div>
+    </section>
   );
 }
 
@@ -61,6 +89,22 @@ export default function InsightsPage() {
   useVacancyData();
   const { isLoading } = useStore();
   const stats = useVacancyStats();
+  const topCities = stats.topCities.map((item) => ({
+    ...item,
+    shortName: truncateLabel(item.name, 18),
+  }));
+  const topSpecialties = stats.topSpecialties.slice(0, 15).map((item) => ({
+    ...item,
+    shortName: truncateLabel(item.name, 34),
+  }));
+  const institutionData = stats.institutionData.slice(0, 12).map((item) => ({
+    ...item,
+    shortName: truncateLabel(item.name, 30),
+  }));
+  const categoryData = stats.categoryData.map((item) => ({
+    name: CATEGORY_LABELS[item.name] ?? item.name,
+    value: item.value,
+  }));
 
   if (isLoading) {
     return (
@@ -78,23 +122,17 @@ export default function InsightsPage() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 pb-16">
 
           {/* ── Hero header ── */}
-          <div className="relative overflow-hidden rounded-2xl mb-8 mt-6 px-6 md:px-8 py-7 md:py-8"
-            style={{ background: 'var(--gradient-primary)' }}
-          >
-            {/* Decorative blobs */}
-            <div className="absolute -top-8 -right-8 w-48 h-48 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
-
+          <div className="relative overflow-hidden rounded-xl border border-border/70 bg-card mb-8 mt-6 px-6 md:px-8 py-7 md:py-8">
             <div className="relative">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 rounded-full text-white/90 text-xs font-semibold mb-3 backdrop-blur-sm">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 rounded-full text-primary text-xs font-semibold mb-3">
                 <TrendingUp size={12} />
                 Deficit la nivel național
               </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight mb-1.5">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight leading-tight mb-1.5">
                 Analytics EduMap
               </h1>
-              <p className="text-white/75 text-sm max-w-lg">
-                Imagine de ansamblu asupra deficitului de cadre didactice în Moldova.
+              <p className="text-muted-foreground text-sm max-w-2xl leading-relaxed">
+                Imagine de ansamblu asupra deficitului de cadre didactice în Moldova. Valorile sunt orientative și depind de calitatea datelor disponibile.
               </p>
             </div>
           </div>
@@ -104,30 +142,34 @@ export default function InsightsPage() {
             <KpiCard
               label="Cel mai mare deficit"
               value={stats.mostVacanciesCity}
-              sub={`${stats.cityCounts[stats.mostVacanciesCity] || 0} vacanțe libere`}
+              sub={`${stats.topCities[0]?.count || 0} vacanțe libere`}
+              hint="Localitatea cu cele mai multe posturi raportate."
               icon={MapPin}
-              color="#ef4444"
+              color="#dc2626"
             />
             <KpiCard
               label="Disciplina lider"
               value={stats.mostInDemand}
               sub="La nivel național"
+              hint="Specialitatea care apare cel mai des în setul curent."
               icon={BookOpen}
-              color="#6366f1"
+              color="#2563eb"
             />
             <KpiCard
               label="Total Instituții"
               value={stats.totalInstitutions}
               sub="Raportează lipsă cadre"
+              hint="Instituții distincte cu cel puțin o vacanță."
               icon={Building2}
-              color="#10b981"
+              color="#059669"
             />
             <KpiCard
               label="Specialități Distincte"
               value={stats.totalSpecialties}
               sub="Necesare la nivel național"
+              hint="Denumiri distincte de discipline sau roluri."
               icon={GraduationCap}
-              color="#f59e0b"
+              color="#d97706"
             />
           </div>
 
@@ -135,13 +177,13 @@ export default function InsightsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
 
             {/* Top cities */}
-            <ChartCard title="Top 15 Localități cu Deficit">
+            <ChartCard title="Top localități cu deficit" description="Cele mai multe vacanțe raportate, ordonate descrescător.">
               <div className="h-[380px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={stats.topCities}
+                    data={topCities}
                     layout="vertical"
-                    margin={{ top: 0, right: 36, left: 44, bottom: 0 }}
+                    margin={{ top: 0, right: 42, left: 64, bottom: 0 }}
                   >
                     <CartesianGrid strokeDasharray="2 4" horizontal={false} vertical={true}
                       stroke="hsl(var(--border))" />
@@ -151,10 +193,11 @@ export default function InsightsPage() {
                       type="category"
                       axisLine={false}
                       tickLine={false}
+                      tickFormatter={(value) => truncateLabel(String(value), 18)}
                       tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                     />
                     <RechartsTooltip cursor={{ fill: 'hsl(var(--secondary))' }} contentStyle={TOOLTIP_STYLE} />
-                    <Bar dataKey="count" fill="#6366f1" radius={[0, 6, 6, 0]} barSize={16}
+                    <Bar dataKey="count" fill="#2563eb" radius={[0, 6, 6, 0]} barSize={16}
                       label={{ position: 'right', fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
                     />
                   </BarChart>
@@ -163,12 +206,12 @@ export default function InsightsPage() {
             </ChartCard>
 
             {/* Category donut */}
-            <ChartCard title="Distribuția pe Categorii de Discipline">
+            <ChartCard title="Distribuția pe categorii" description="Discipline grupate semantic pentru scanare rapidă.">
               <div className="h-[380px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={stats.categoryData}
+                      data={categoryData}
                       cx="50%"
                       cy="44%"
                       innerRadius={78}
@@ -193,44 +236,42 @@ export default function InsightsPage() {
             </ChartCard>
 
             {/* Top specialties */}
-            <ChartCard title="Top 20 Discipline Căutate" className="lg:col-span-2">
-              <div className="h-[380px]">
+            <ChartCard title="Top discipline căutate" description="Denumirile lungi sunt afișate vertical pentru a evita suprapunerea." className="lg:col-span-2">
+              <div className="h-[480px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={stats.topSpecialties}
-                    margin={{ top: 10, right: 20, left: 10, bottom: 68 }}
+                    data={topSpecialties}
+                    layout="vertical"
+                    margin={{ top: 0, right: 44, left: 164, bottom: 0 }}
                   >
-                    <CartesianGrid strokeDasharray="2 4" vertical={false} stroke="hsl(var(--border))" />
-                    <XAxis
-                      dataKey="name"
-                      angle={-42}
-                      textAnchor="end"
-                      height={80}
-                      interval={0}
-                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
+                    <CartesianGrid strokeDasharray="2 4" horizontal={false} vertical={true} stroke="hsl(var(--border))" />
+                    <XAxis type="number" hide />
                     <YAxis
+                      dataKey="name"
+                      type="category"
+                      width={160}
+                      tickFormatter={(value) => truncateLabel(String(value), 32)}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                     />
                     <RechartsTooltip cursor={{ fill: 'hsl(var(--secondary))' }} contentStyle={TOOLTIP_STYLE} />
-                    <Bar dataKey="value" fill="#6366f1" radius={[5, 5, 0, 0]} />
+                    <Bar dataKey="count" fill="#2563eb" radius={[0, 6, 6, 0]}
+                      label={{ position: 'right', fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </ChartCard>
 
             {/* Institution types */}
-            <ChartCard title="Deficit pe Tip de Instituție">
-              <div className="h-[280px]">
+            <ChartCard title="Deficit pe tip de instituție" description="Tipuri normalizate doar pentru afișare, fără modificarea datelor sursă.">
+              <div className="h-[360px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={stats.institutionData}
+                    data={institutionData}
                     layout="vertical"
-                    margin={{ top: 0, right: 36, left: 64, bottom: 0 }}
+                    margin={{ top: 0, right: 40, left: 132, bottom: 0 }}
                   >
                     <CartesianGrid strokeDasharray="2 4" horizontal={false} vertical={true}
                       stroke="hsl(var(--border))" />
@@ -238,12 +279,14 @@ export default function InsightsPage() {
                     <YAxis
                       dataKey="name"
                       type="category"
+                      width={132}
                       axisLine={false}
                       tickLine={false}
+                      tickFormatter={(value) => truncateLabel(String(value), 28)}
                       tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                     />
                     <RechartsTooltip cursor={{ fill: 'hsl(var(--secondary))' }} contentStyle={TOOLTIP_STYLE} />
-                    <Bar dataKey="count" fill="#10b981" radius={[0, 6, 6, 0]} barSize={20}
+                    <Bar dataKey="count" fill="#059669" radius={[0, 6, 6, 0]} barSize={18}
                       label={{ position: 'right', fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
                     />
                   </BarChart>
@@ -252,7 +295,7 @@ export default function InsightsPage() {
             </ChartCard>
 
             {/* Rare specialties */}
-            <ChartCard title="Discipline Rare (< 3 posturi)">
+            <ChartCard title="Discipline rare" description="Specialități cu mai puțin de 3 posturi raportate.">
               <ScrollArea className="h-[280px]">
                 <div className="space-y-2 pr-2">
                   {stats.rareSpecialties.map((item, i) => (

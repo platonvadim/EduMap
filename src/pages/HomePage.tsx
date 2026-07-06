@@ -3,22 +3,26 @@ import { MapView } from '../components/MapView';
 import { CitySidebar } from '../components/CitySidebar';
 import { FilterChips } from '../components/FilterChips';
 import { useVacancyData } from '../hooks/useVacancyData';
+import { useVacancyStats } from '../hooks/useVacancyStats';
 import { useStore } from '../store/useStore';
 import { useFuseSearch } from '../hooks/useFuseSearch';
 import { VacancyCard } from '../components/VacancyCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 export default function HomePage() {
   useVacancyData();
   const { isLoading, searchQuery, filters, setSearchQuery, setFilter } = useStore();
   const searchResults = useFuseSearch();
+  const stats = useVacancyStats();
 
   const isSearching = searchQuery.trim().length > 0 || filters.category !== null;
 
   return (
     <Layout>
       <div className="flex-1 flex relative w-full h-full">
+        <h1 className="sr-only">EduMap Moldova: hartă interactivă a vacanțelor didactice</h1>
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col relative w-full h-full z-0">
 
@@ -29,15 +33,37 @@ export default function HomePage() {
             </div>
           </div>
 
+          <section
+            aria-label="Rezumat hartă"
+            className="absolute top-[58px] left-3 right-3 md:top-[72px] md:left-5 md:right-auto md:w-[360px] z-10 rounded-xl border border-border/70 bg-card/90 backdrop-blur-md shadow-md px-4 py-3"
+          >
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Info size={15} strokeWidth={2} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-foreground">Vacanțe didactice pe hartă</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  {stats.totalVacancies} posturi în {stats.citiesWithVacancies} localități. Date consultative, pot fi incomplete.
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* Map */}
           <div className="flex-1 w-full h-full relative">
             {isLoading ? (
               <div className="absolute inset-0 flex items-center justify-center bg-slate-50 dark:bg-slate-900 z-20">
-                <div className="flex flex-col items-center gap-4">
-                  <div className="w-9 h-9 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                  <p className="text-muted-foreground text-sm font-medium animate-pulse">
-                    Încărcare date...
-                  </p>
+                <div className="w-full max-w-sm rounded-2xl border border-border/70 bg-card/90 p-5 shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-primary/10" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-3 w-2/3 rounded-full bg-muted animate-pulse" />
+                      <div className="h-3 w-1/2 rounded-full bg-muted animate-pulse" />
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm font-semibold text-foreground">Se încarcă harta și datele</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Pregătim localitățile, filtrele și lista de vacanțe.</p>
                 </div>
               </div>
             ) : (

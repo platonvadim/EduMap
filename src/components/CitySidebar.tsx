@@ -163,6 +163,7 @@ export function CitySidebar() {
                 </div>
                 <button
                   onClick={() => setSelectedCity(null)}
+                  aria-label="Închide panoul localității"
                   className="p-1.5 rounded-xl hover:bg-secondary text-muted-foreground transition-colors shrink-0"
                 >
                   <X size={17} />
@@ -214,7 +215,9 @@ export function CitySidebar() {
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-3.5 h-3.5" />
                     <Input
+                      id="city-sidebar-search"
                       placeholder="Caută instituție sau disciplină..."
+                      aria-label="Caută în vacanțele localității"
                       className="pl-9 h-8 text-sm bg-secondary/50 border-transparent focus:border-border rounded-lg"
                       value={localSearch}
                       onChange={e => setLocalSearch(e.target.value)}

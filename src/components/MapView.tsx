@@ -55,26 +55,26 @@ function resolveName(feature: Feature): string | null {
 }
 
 function getDistrictColor(count: number, max: number, isSelected: boolean): string {
-  if (isSelected) return '#4f46e5';
+  if (isSelected) return '#1d4ed8';
   if (count === 0) return '#e8eaf0';
   const t = Math.min(count / max, 1);
-  if (t < 0.15) return '#e0e7ff';
-  if (t < 0.35) return '#c7d2fe';
-  if (t < 0.60) return '#a5b4fc';
-  if (t < 0.80) return '#818cf8';
-  return '#6366f1';
+  if (t < 0.15) return '#dbeafe';
+  if (t < 0.35) return '#bfdbfe';
+  if (t < 0.60) return '#93c5fd';
+  if (t < 0.80) return '#60a5fa';
+  return '#2563eb';
 }
 
 function createLabelIcon(city: string, count: number, isSelected: boolean) {
   const bg        = isSelected
-    ? 'linear-gradient(135deg,#6366f1,#7c3aed)'
+    ? '#1d4ed8'
     : 'rgba(255,255,255,0.94)';
   const textColor = isSelected ? '#ffffff' : '#1e1b4b';
-  const border    = isSelected ? 'transparent' : 'rgba(99,102,241,0.25)';
-  const badgeBg   = isSelected ? 'rgba(255,255,255,0.25)' : 'linear-gradient(135deg,#6366f1,#7c3aed)';
+  const border    = isSelected ? 'transparent' : 'rgba(37,99,235,0.25)';
+  const badgeBg   = isSelected ? 'rgba(255,255,255,0.25)' : '#2563eb';
   const badgeText = '#ffffff';
   const shadow    = isSelected
-    ? '0 4px 18px rgba(99,102,241,0.50), 0 1px 4px rgba(0,0,0,0.15)'
+    ? '0 4px 18px rgba(37,99,235,0.45), 0 1px 4px rgba(0,0,0,0.15)'
     : '0 2px 10px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.06)';
 
   const short = city.length > 12 ? city.slice(0, 12) + '…' : city;
@@ -83,7 +83,7 @@ function createLabelIcon(city: string, count: number, isSelected: boolean) {
     display:inline-flex;align-items:center;gap:5px;
     background:${bg};border:1.5px solid ${border};border-radius:999px;
     padding:3px 6px 3px 9px;box-shadow:${shadow};cursor:pointer;
-    white-space:nowrap;font-family:'Inter',-apple-system,sans-serif;
+    white-space:nowrap;font-family:system-ui,-apple-system,sans-serif;
     pointer-events:auto;backdrop-filter:blur(8px);
   ">
     <span style="font-size:11px;font-weight:${isSelected ? 700 : 600};color:${textColor};letter-spacing:-0.01em;line-height:1">${short}</span>
@@ -255,10 +255,10 @@ export function MapView() {
         <div className="space-y-2">
           {[
             { color: '#e8eaf0', label: 'Fără vacanțe' },
-            { color: '#e0e7ff', label: 'Puține' },
-            { color: '#a5b4fc', label: 'Mediu' },
-            { color: '#818cf8', label: 'Ridicat' },
-            { color: '#6366f1', label: 'Foarte ridicat' },
+            { color: '#dbeafe', label: 'Puține' },
+            { color: '#93c5fd', label: 'Mediu' },
+            { color: '#60a5fa', label: 'Ridicat' },
+            { color: '#2563eb', label: 'Foarte ridicat' },
           ].map(({ color, label }) => (
             <div key={label} className="flex items-center gap-2">
               <span className="w-4 h-3 rounded-[4px] inline-block shrink-0" style={{ background: color }} />

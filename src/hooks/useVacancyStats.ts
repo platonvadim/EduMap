@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useStore } from '../store/useStore';
-import { categorizeSpecialty } from '../utils/normalize';
+import { categorizeSpecialty, normalizeDisplayLabel, normalizeSpecialty } from '../utils/normalize';
 
 export function useVacancyStats() {
   const { vacancies, filters, searchQuery } = useStore();
@@ -31,16 +31,17 @@ export function useVacancyStats() {
       const cat = categorizeSpecialty(v.specialty_name);
       categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
 
-      specialtyCounts[v.specialty_name] = (specialtyCounts[v.specialty_name] || 0) + 1;
+      const specialty = normalizeSpecialty(v.specialty_name);
+      specialtyCounts[specialty] = (specialtyCounts[specialty] || 0) + 1;
       
-      const iType = v.institution_type || "Nespecificat";
+      const iType = normalizeDisplayLabel(v.institution_type || "Nespecificat");
       institutionTypeCounts[iType] = (institutionTypeCounts[iType] || 0) + 1;
     });
 
     const topCities = Object.entries(cityCounts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 15)
-      .map(([name, count]) => ({ name, count }));
+      .map(([name, count]) => ({ name: normalizeDisplayLabel(name), count }));
 
     const topSpecialties = Object.entries(specialtyCounts)
       .sort((a, b) => b[1] - a[1])

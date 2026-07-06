@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { SearchBar } from "./SearchBar";
-import { Map, BarChart2, Sun, Moon, Search, X, Mail } from "lucide-react";
+import { Map, BarChart2, Sun, Moon, Search, X, Mail, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,6 +13,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const { setSearchQuery, setFilter, searchQuery } = useStore();
+  const isMapPage = location === "/";
 
   const toggleDark = () => {
     const isDarkMode = document.documentElement.classList.toggle("dark");
@@ -41,7 +42,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     "text-muted-foreground hover:text-foreground hover:bg-secondary/70";
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-background text-foreground">
+    <div className="flex flex-col min-h-[100dvh] h-[100dvh] overflow-hidden bg-background text-foreground">
       {/* ── Header ── */}
       <header className="flex-shrink-0 h-12 md:h-14 border-b border-border/60 flex items-center justify-between px-4 md:px-5 bg-card/80 backdrop-blur-xl z-50 shadow-sm shadow-black/[0.04]">
         {/* Left: logo + nav */}
@@ -53,7 +54,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           >
             {/* Gradient logo mark */}
             <div className="w-7 h-7 md:w-8 md:h-8 rounded-xl gradient-bg text-white flex items-center justify-center shadow-md shadow-primary/30 shrink-0">
-              <Map size={15} />
+              <Map size={15} strokeWidth={2} />
             </div>
             <span className="hidden sm:flex items-center gap-1">
               <span className="gradient-text font-extrabold">EduMap</span>
@@ -80,7 +81,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               href="/insights"
               className={`${navBase} ${location === "/insights" ? navActive : navInactive} flex items-center gap-1.5`}
             >
-              <BarChart2 size={14} />
+              <BarChart2 size={14} strokeWidth={2} />
               Analytics
               {location === "/insights" && (
                 <motion.span
@@ -93,7 +94,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               href="/contact"
               className={`${navBase} ${location === "/contact" ? navActive : navInactive} flex items-center gap-1.5`}
             >
-              <Mail size={14} />
+              <Mail size={14} strokeWidth={2} />
               Contact
               {location === "/contact" && (
                 <motion.span
@@ -107,33 +108,48 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Right: search + theme */}
         <div className="flex items-center gap-2">
+          {isMapPage ? (
           <div className="w-60 hidden md:block">
             <SearchBar />
           </div>
+          ) : (
+            <Link
+              href="/"
+              onClick={handleMapClick}
+              className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-secondary/80 px-3 py-1.5 text-sm font-semibold text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              <ArrowLeft size={14} strokeWidth={2} />
+              Caută pe hartă
+            </Link>
+          )}
 
-          <Button
+          {isMapPage && (
+            <Button
             variant="ghost"
             size="icon"
             onClick={handleSearchToggle}
+            aria-label={mobileSearchOpen ? "Închide căutarea" : "Deschide căutarea"}
             className="md:hidden w-8 h-8 rounded-full text-muted-foreground hover:text-foreground"
           >
-            {mobileSearchOpen ? <X size={17} /> : <Search size={17} />}
+            {mobileSearchOpen ? <X size={17} strokeWidth={2} /> : <Search size={17} strokeWidth={2} />}
           </Button>
+          )}
 
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleDark}
+            aria-label={isDark ? "Activează tema luminoasă" : "Activează tema întunecată"}
             className="w-8 h-8 rounded-full text-muted-foreground hover:text-foreground"
           >
-            {isDark ? <Sun size={17} /> : <Moon size={17} />}
+            {isDark ? <Sun size={17} strokeWidth={2} /> : <Moon size={17} strokeWidth={2} />}
           </Button>
         </div>
       </header>
 
       {/* Mobile slide-down search */}
       <AnimatePresence>
-        {mobileSearchOpen && (
+        {isMapPage && mobileSearchOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}

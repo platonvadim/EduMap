@@ -18,10 +18,13 @@ export function SearchBar({ autoFocus }: { autoFocus?: boolean }) {
         size={15}
       />
       <Input
+        id="site-search"
         ref={ref}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Caută instituție, disciplină..."
+        aria-label="Caută instituție sau disciplină"
+        type="search"
         className="pl-9 pr-8 bg-secondary border-none h-9 text-sm"
       />
       {searchQuery && (
