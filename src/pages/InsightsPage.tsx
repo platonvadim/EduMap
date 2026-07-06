@@ -142,7 +142,7 @@ export default function InsightsPage() {
             <KpiCard
               label="Cel mai mare deficit"
               value={stats.mostVacanciesCity}
-              sub={`${stats.topCities[0]?.count || 0} vacante libere`}
+              sub={`${stats.topCities[0]?.count || 0} vacanțe libere`}
               hint="Localitatea cu cele mai multe posturi raportate."
               icon={MapPin}
               color="#dc2626"
@@ -159,7 +159,7 @@ export default function InsightsPage() {
               label="Total Instituții"
               value={stats.totalInstitutions}
               sub="Raportează lipsă cadre"
-              hint="Instituții distincte cu cel puțin o vacansie."
+              hint="Instituții distincte cu cel puțin o vacanță."
               icon={Building2}
               color="#059669"
             />
@@ -177,7 +177,7 @@ export default function InsightsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
 
             {/* Top cities */}
-            <ChartCard title="Top localități cu deficit" description="Cele mai multe locuri vacante raportate, ordonate descrescător.">
+            <ChartCard title="Top localități cu deficit" description="Cele mai multe vacanțe raportate, ordonate descrescător.">
               <div className="h-[380px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart

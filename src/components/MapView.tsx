@@ -84,7 +84,7 @@ function createLabelIcon(city: string, count: number, isSelected: boolean) {
     : '0 2px 10px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.06)';
   const short = escapeHtml(city.length > 12 ? `${city.slice(0, 12)}…` : city);
 
-  const html = `<div role="button" aria-label="${escapeHtml(city)}: ${count} vacante" style="
+  const html = `<div role="button" aria-label="${escapeHtml(city)}: ${count} vacanțe" style="
     display:inline-flex;align-items:center;gap:5px;
     background:${bg};border:1.5px solid ${border};border-radius:999px;
     padding:3px 6px 3px 9px;box-shadow:${shadow};cursor:pointer;
@@ -169,8 +169,8 @@ function DistrictLayer({
 
       if (city) {
         const label = count > 0
-          ? `<strong>${escapeHtml(city)}</strong><br/>${count} vacante`
-          : `<strong>${escapeHtml(city)}</strong><br/>Fără vacante`;
+          ? `<strong>${escapeHtml(city)}</strong><br/>${count} vacanțe`
+          : `<strong>${escapeHtml(city)}</strong><br/>Fără vacanțe`;
         path.bindTooltip(
           `<div style="font-family:-apple-system,sans-serif;font-size:12px;line-height:1.5">${label}</div>`,
           { sticky: true, opacity: 0.95 }
@@ -262,10 +262,10 @@ export function MapView() {
       )}
 
       <div className="hidden md:block absolute bottom-5 left-3 z-[1000] glass rounded-2xl p-3.5 text-xs shadow-lg">
-        <p className="font-bold text-foreground mb-2.5 text-[11px] uppercase tracking-widest">Vacante / raion</p>
+        <p className="font-bold text-foreground mb-2.5 text-[11px] uppercase tracking-widest">Vacanțe / raion</p>
         <div className="space-y-2">
           {[
-            { color: '#e8eaf0', label: 'Fără vacante' },
+            { color: '#e8eaf0', label: 'Fără vacanțe' },
             { color: '#dbeafe', label: 'Puține' },
             { color: '#93c5fd', label: 'Mediu' },
             { color: '#60a5fa', label: 'Ridicat' },

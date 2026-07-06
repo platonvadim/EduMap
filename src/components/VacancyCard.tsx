@@ -189,7 +189,7 @@ export function VacancyCard({ vacancy }: { vacancy: Vacancy }) {
                 <DetailRow icon={MapPin}       label="Localitate"      value={vacancy.city} />
                 <DetailRow icon={Building2}    label="OLSDI"           value={vacancy.olsdi} />
                 <DetailRow icon={Hash}         label="Cod specialitate" value={vacancy.specialty_code} />
-                <DetailRow icon={ExternalLink} label="ID Vacansie"      value={vacancy.id} />
+                <DetailRow icon={ExternalLink} label="ID Vacanță"      value={vacancy.id} />
               </div>
             </div>
           </motion.div>

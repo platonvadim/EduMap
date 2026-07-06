@@ -1,0 +1,12 @@
+# EduMap SPA deployed under https://platon.md/edumap/
+Options -MultiViews
+RewriteEngine On
+RewriteBase /edumap/
+
+# Serve existing files and folders normally: assets, data JSON, images, favicon, etc.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# All app routes go to React entry point.
+RewriteRule ^ index.html [L]

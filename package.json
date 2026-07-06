@@ -10,7 +10,9 @@
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "build:relative": "VITE_BASE_PATH=./ vite build --config vite.config.ts",
-    "preview": "vite preview --config vite.config.ts --host 0.0.0.0"
+    "preview": "vite preview --config vite.config.ts --host 0.0.0.0",
+    "build:platon": "cross-env VITE_BASE_PATH=/edumap/ vite build",
+    "preview:platon": "vite preview --config vite.config.ts --host 0.0.0.0"
   },
   "devDependencies": {
     "@radix-ui/react-scroll-area": "^1.2.4",
@@ -27,6 +29,7 @@
     "@vitejs/plugin-react": "^4.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cross-env": "^10.1.0",
     "framer-motion": "^12.23.0",
     "lucide-react": "^0.468.0",
     "react": "^19.1.0",
