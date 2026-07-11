@@ -3,10 +3,13 @@ import { Switch, Route, Router as WouterRouter } from 'wouter';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { HelmetProvider } from 'react-helmet-async';
 
 const HomePage = lazy(() => import('@/pages/HomePage'));
 const InsightsPage = lazy(() => import('@/pages/InsightsPage'));
 const ContactPage = lazy(() => import('@/pages/ContactPage'));
+const CatalogPage = lazy(() => import('@/pages/CatalogPage'));
+const SourcesPage = lazy(() => import('@/pages/SourcesPage'));
 const NotFound = lazy(() => import('@/pages/not-found'));
 
 function RouteFallback() {
@@ -26,7 +29,9 @@ function Router() {
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/insights" component={InsightsPage} />
+        <Route path="/catalog" component={CatalogPage} />
         <Route path="/contact" component={ContactPage} />
+        <Route path="/surse" component={SourcesPage} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
@@ -41,14 +46,16 @@ function getRouterBase() {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <TooltipProvider>
-        <WouterRouter base={getRouterBase()}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </ErrorBoundary>
+    <HelmetProvider>
+      <ErrorBoundary>
+        <TooltipProvider>
+          <WouterRouter base={getRouterBase()}>
+            <Router />
+          </WouterRouter>
+          <Toaster />
+        </TooltipProvider>
+      </ErrorBoundary>
+    </HelmetProvider>
   );
 }
 

@@ -22,6 +22,7 @@ export function useVacancyStats() {
     const categoryCounts: Record<string, number> = {};
     const specialtyCounts: Record<string, number> = {};
     const institutionTypeCounts: Record<string, number> = {};
+    const institutionCounts: Record<string, number> = {};
 
     activeVacancies.forEach((v) => {
       cityCounts[v.city] = (cityCounts[v.city] || 0) + 1;
@@ -34,6 +35,9 @@ export function useVacancyStats() {
 
       const iType = normalizeDisplayLabel(v.institution_type || 'Nespecificat');
       institutionTypeCounts[iType] = (institutionTypeCounts[iType] || 0) + 1;
+
+      const instKey = `${v.institution} (${v.city})`;
+      institutionCounts[instKey] = (institutionCounts[instKey] || 0) + 1;
     });
 
     const topCities = Object.entries(cityCounts)
@@ -59,6 +63,11 @@ export function useVacancyStats() {
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'ro'));
 
+    const topSchools = Object.entries(institutionCounts)
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ro'))
+      .slice(0, 15)
+      .map(([name, count]) => ({ name, count }));
+
     return {
       totalVacancies,
       citiesWithVacancies,
@@ -66,6 +75,7 @@ export function useVacancyStats() {
       totalSpecialties,
       topCities,
       topSpecialties,
+      topSchools,
       rareSpecialties,
       categoryData,
       institutionData,

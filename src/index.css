@@ -1,4 +1,79 @@
 @import "tailwindcss";
+
+.school-popup {
+  font-family: inherit;
+  color: hsl(var(--foreground));
+  line-height: 1.45;
+}
+
+.school-popup__eyebrow {
+  margin: 0 0 0.35rem;
+  color: #15803d;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.school-popup h3 {
+  margin: 0 0 0.55rem;
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.school-popup p {
+  margin: 0.22rem 0;
+  font-size: 0.78rem;
+}
+
+.school-popup button {
+  width: 100%;
+  margin-top: 0.7rem;
+  border: 0;
+  border-radius: 0.65rem;
+  background: #15803d;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.62rem 0.8rem;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.school-popup button:hover { background: #166534; }
+.school-popup button:active { transform: scale(0.98); }
+.school-popup button:focus-visible { outline: 3px solid rgba(21, 128, 61, 0.28); outline-offset: 2px; }
+
+.map-control-panel {
+  bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+.map-control-panel::-webkit-scrollbar { width: 5px; }
+.map-control-panel::-webkit-scrollbar-track { background: transparent; }
+.map-control-panel::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 999px; }
+
+.mobile-bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (max-width: 767px) {
+  .leaflet-control-zoom { display: none; }
+  .leaflet-control-attribution { margin-bottom: 0.25rem !important; font-size: 8px !important; }
+  .leaflet-popup-content-wrapper { border-radius: 14px; }
+  .leaflet-popup-content { width: min(72vw, 19rem) !important; margin: 0.9rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 @import "leaflet/dist/leaflet.css";
@@ -260,4 +335,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+.dark .leaflet-layer {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }

@@ -6,7 +6,10 @@ import {
   Calculator, Languages, Microscope, GraduationCap,
   Brain, Palette, Dumbbell, BookOpen, Briefcase,
   ChevronDown, MapPin, Hash, Building2, ExternalLink,
+  Navigation, Share2, Check
 } from 'lucide-react';
+import { useStore } from '../store/useStore';
+import { useLocation } from 'wouter';
 
 const CATEGORY_META: Record<string, {
   icon: React.ElementType;
@@ -96,6 +99,9 @@ function DetailRow({ icon: Icon, label, value }: { icon: React.ElementType; labe
 
 export function VacancyCard({ vacancy }: { vacancy: Vacancy }) {
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const { resetFilters, setMapTargetInstitution } = useStore();
+  const [, navigate] = useLocation();
 
   function toggleOpen() {
     setOpen((value) => !value);
@@ -107,6 +113,27 @@ export function VacancyCard({ vacancy }: { vacancy: Vacancy }) {
       toggleOpen();
     }
   }
+
+  async function handleShare(event: React.MouseEvent) {
+    event.stopPropagation();
+    const shareText = `Post vacant: ${vacancy.specialty_name} la ${vacancy.institution}, ${vacancy.city}. Vezi pe EduMap Moldova: https://platon.md/edumap`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Post vacant didactic',
+          text: shareText,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  }
+
   const category = categorizeSpecialty(vacancy.specialty_name);
   const meta = CATEGORY_META[category];
   const Icon = meta.icon;
@@ -189,7 +216,30 @@ export function VacancyCard({ vacancy }: { vacancy: Vacancy }) {
                 <DetailRow icon={MapPin}       label="Localitate"      value={vacancy.city} />
                 <DetailRow icon={Building2}    label="OLSDI"           value={vacancy.olsdi} />
                 <DetailRow icon={Hash}         label="Cod specialitate" value={vacancy.specialty_code} />
-                <DetailRow icon={ExternalLink} label="ID Vacanță"      value={vacancy.id} />
+                <DetailRow icon={ExternalLink} label="ID"              value={vacancy.id} />
+              </div>
+              <div className="mt-3 flex gap-2">
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setMapTargetInstitution(vacancy.institution);
+                    resetFilters();
+                    navigate('/');
+                  }}
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                >
+                  <Navigation className="h-3.5 w-3.5" />
+                  Arată pe hartă
+                </button>
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs font-bold text-foreground transition-colors hover:bg-secondary focus-visible:outline-none"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Share2 className="h-3.5 w-3.5" />}
+                  {copied ? 'Copiat' : 'Distribuie'}
+                </button>
               </div>
             </div>
           </motion.div>

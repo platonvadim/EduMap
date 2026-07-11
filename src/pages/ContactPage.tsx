@@ -1,9 +1,14 @@
 import { Layout } from '../components/Layout';
 import { Send, Mail, ExternalLink, AlertCircle, ClipboardList } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 export default function ContactPage() {
   return (
     <Layout>
+      <Helmet>
+        <title>Contact | EduMap Moldova</title>
+        <meta name="description" content="Contactează echipa EduMap Moldova pentru corectarea datelor, întrebări tehnice sau sugestii de îmbunătățire a platformei." />
+      </Helmet>
       <div className="flex-1 overflow-y-auto bg-background px-4 py-6 md:py-10">
         <div className="mx-auto w-full max-w-4xl">
           <div className="grid gap-5 md:grid-cols-[1.1fr_0.9fr]">

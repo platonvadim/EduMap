@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { SearchBar } from "./SearchBar";
-import { Map, BarChart2, Sun, Moon, Search, X, Mail, ArrowLeft } from "lucide-react";
+import { Map, BarChart2, Sun, Moon, Search, X, Mail, ArrowLeft, LibraryBig, HelpCircle, ChevronLeft, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [isDark, setIsDark] = React.useState(() => {
     const saved = window.localStorage.getItem("edumap-theme");
     if (saved === "dark") {
@@ -21,8 +21,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
     return document.documentElement.classList.contains("dark");
   });
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(() => window.localStorage.getItem("edumap-tour-completed") !== "true");
+  const [tourStep, setTourStep] = useState(0);
+  const [tourTarget, setTourTarget] = useState<DOMRect | null>(null);
   const { resetFilters, setSearchQuery, setFilter, searchQuery } = useStore();
   const isMapPage = location === "/";
+  const hasContextSearch = isMapPage || location === "/catalog";
 
   const toggleDark = () => {
     const isDarkMode = document.documentElement.classList.toggle("dark");
@@ -49,6 +53,84 @@ export function Layout({ children }: { children: React.ReactNode }) {
     "bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary shadow-sm";
   const navInactive =
     "text-muted-foreground hover:text-foreground hover:bg-secondary/70";
+
+  const tourSteps = [
+    {
+      title: "Deschide filtrele",
+      text: "Apasă elementul evidențiat pentru a începe configurarea hărții.",
+      selector: "[data-tour='map-filter-button'], [data-tour='discipline-button']",
+      action: "Deschide filtrele hărții",
+    },
+    {
+      title: "Alege o zonă",
+      text: "Deschide lista evidențiată. Alegerea unui oraș va filtra harta și va deschide statistica lui.",
+      selector: "[data-tour='map-filter-button'], [data-tour='city-filter']",
+      action: "Deschide filtrele hărții",
+    },
+    {
+      title: "Arată toate școlile",
+      text: "Apasă pentru a include și instituțiile care nu au locuri vacante publicate.",
+      selector: "[data-tour='all-schools']",
+      action: "Apasă Toate școlile",
+    },
+    {
+      title: "Caută direct",
+      text: "Apasă câmpul de căutare. Rezultatele vor fi adaptate paginii în care te afli.",
+      selector: "[data-tour='mobile-search-button'], #site-search",
+      action: "Apasă câmpul de căutare",
+    },
+    {
+      title: "Revino oricând",
+      text: "Poți porni din nou acest ghid folosind butonul cu semnul întrebării din partea de sus.",
+      selector: null,
+      action: null,
+    },
+  ];
+
+  React.useEffect(() => {
+    if (!tourOpen) return;
+    const step = tourSteps[tourStep];
+    if (!step.selector) {
+      setTourTarget(null);
+      return;
+    }
+
+    const updateTarget = () => {
+      const element = [...document.querySelectorAll(step.selector!)].find((candidate) => {
+        const rect = candidate.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      });
+      setTourTarget(element?.getBoundingClientRect() ?? null);
+    };
+    updateTarget();
+    const element = [...document.querySelectorAll(step.selector)].find((candidate) => {
+      const rect = candidate.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+    const advance = () => setTourStep((current) => Math.min(current + 1, tourSteps.length - 1));
+    element?.addEventListener('click', advance, { once: true });
+    window.addEventListener('resize', updateTarget);
+    return () => {
+      element?.removeEventListener('click', advance);
+      window.removeEventListener('resize', updateTarget);
+    };
+  }, [tourOpen, tourStep]);
+
+  const closeTour = () => {
+    window.localStorage.setItem("edumap-tour-completed", "true");
+    setTourOpen(false);
+    setTourStep(0);
+  };
+
+  const openTour = () => {
+    if (location !== "/") {
+      window.localStorage.removeItem("edumap-tour-completed");
+      navigate("/");
+      return;
+    }
+    setTourStep(0);
+    setTourOpen(true);
+  };
 
   return (
     <div className="flex flex-col min-h-[100dvh] h-[100dvh] overflow-hidden bg-background text-foreground">
@@ -87,12 +169,33 @@ export function Layout({ children }: { children: React.ReactNode }) {
               )}
             </Link>
             <Link
+              href="/catalog"
+              onClick={() => setSearchQuery("")}
+              className={`${navBase} ${location === "/catalog" ? navActive : navInactive} flex items-center gap-1.5`}
+            >
+              <LibraryBig size={14} strokeWidth={2} />
+              Catalog
+            </Link>
+            <Link
               href="/insights"
               className={`${navBase} ${location === "/insights" ? navActive : navInactive} flex items-center gap-1.5`}
             >
               <BarChart2 size={14} strokeWidth={2} />
               Analytics
               {location === "/insights" && (
+                <motion.span
+                  layoutId="nav-pill"
+                  className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/15 -z-10"
+                />
+              )}
+            </Link>
+            <Link
+              href="/surse"
+              className={`${navBase} ${location === "/surse" ? navActive : navInactive} flex items-center gap-1.5`}
+            >
+              <Database size={14} strokeWidth={2} />
+              Surse
+              {location === "/surse" && (
                 <motion.span
                   layoutId="nav-pill"
                   className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/15 -z-10"
@@ -117,9 +220,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Right: search + theme */}
         <div className="flex items-center gap-2">
-          {isMapPage ? (
+          {hasContextSearch ? (
           <div className="w-60 hidden md:block">
-            <SearchBar />
+            <SearchBar placeholder={isMapPage ? "Caută pe hartă..." : "Caută în catalog..."} />
           </div>
           ) : (
             <Link
@@ -132,8 +235,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </Link>
           )}
 
-          {isMapPage && (
+          {hasContextSearch && (
             <Button
+            data-tour="mobile-search-button"
             variant="ghost"
             size="icon"
             onClick={handleSearchToggle}
@@ -143,6 +247,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
             {mobileSearchOpen ? <X size={17} strokeWidth={2} /> : <Search size={17} strokeWidth={2} />}
           </Button>
           )}
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={openTour}
+            aria-label="Deschide ghidul aplicației"
+            className="w-8 h-8 rounded-full text-muted-foreground hover:text-foreground"
+          >
+            <HelpCircle size={17} strokeWidth={2} />
+          </Button>
 
           <Button
             variant="ghost"
@@ -158,7 +272,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile slide-down search */}
       <AnimatePresence>
-        {isMapPage && mobileSearchOpen && (
+        {hasContextSearch && mobileSearchOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -166,13 +280,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
             transition={{ duration: 0.18, ease: "easeOut" }}
             className="md:hidden overflow-hidden border-b border-border/60 bg-card/95 backdrop-blur-xl z-40 px-4 py-2.5"
           >
-            <SearchBar autoFocus />
+            <SearchBar autoFocus placeholder={isMapPage ? "Caută pe hartă..." : "Caută în catalog..."} />
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* ── Content ── */}
-      <main className="flex-1 relative flex overflow-hidden pb-[72px] md:pb-6">
+      <main className="flex-1 min-h-0 relative flex overflow-hidden">
         {children}
       </main>
 
@@ -185,7 +299,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* ── Mobile bottom nav ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass border-t z-50 flex flex-col items-stretch">
+      <nav className="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 glass border-t z-50 flex flex-col items-stretch">
         {/* Disclaimer (mobile) */}
         <div className="flex items-center justify-center px-3 py-1 border-b border-border/30">
           <p className="text-[9px] text-muted-foreground text-center leading-tight">
@@ -205,6 +319,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
           Hartă
         </Link>
         <Link
+          href="/catalog"
+          onClick={() => setSearchQuery("")}
+          className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${
+            location === "/catalog" ? "text-primary" : "text-muted-foreground"
+          }`}
+        >
+          <LibraryBig size={19} strokeWidth={location === "/catalog" ? 2.2 : 1.8} />
+          Catalog
+        </Link>
+        <Link
           href="/insights"
           className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${
             location === "/insights" ? "text-primary" : "text-muted-foreground"
@@ -212,6 +336,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         >
           <BarChart2 size={19} strokeWidth={location === "/insights" ? 2.2 : 1.8} />
           Analytics
+        </Link>
+        <Link
+          href="/surse"
+          className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${
+            location === "/surse" ? "text-primary" : "text-muted-foreground"
+          }`}
+        >
+          <Database size={19} strokeWidth={location === "/surse" ? 2.2 : 1.8} />
+          Surse
         </Link>
         <Link
           href="/contact"
@@ -224,6 +357,81 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </Link>
         </div>
       </nav>
+
+      <AnimatePresence>
+        {tourOpen && (
+          <div className="pointer-events-none fixed inset-0 z-[2000]">
+            {tourTarget && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="fixed rounded-xl ring-4 ring-primary ring-offset-2 ring-offset-background"
+                style={{
+                  left: Math.max(4, tourTarget.left - 5),
+                  top: Math.max(4, tourTarget.top - 5),
+                  width: tourTarget.width + 10,
+                  height: tourTarget.height + 10,
+                  boxShadow: '0 0 0 9999px rgba(15, 23, 42, 0.62)',
+                }}
+              />
+            )}
+            <motion.section
+              initial={{ opacity: 0, y: 10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="pointer-events-auto fixed w-[min(22rem,calc(100vw-1.5rem))] rounded-2xl border border-border bg-background p-4 shadow-2xl"
+              style={tourTarget ? {
+                left: Math.min(Math.max(12, tourTarget.left), Math.max(12, window.innerWidth - 364)),
+                top: tourTarget.bottom + 250 < window.innerHeight ? tourTarget.bottom + 16 : Math.max(12, tourTarget.top - 245),
+              } : {
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+              role="dialog"
+              aria-modal="false"
+              aria-labelledby="tour-title"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-bold tabular-nums text-primary">Pasul {tourStep + 1} din {tourSteps.length}</span>
+                <button type="button" onClick={closeTour} className="rounded-lg px-2 py-1 text-xs font-semibold text-muted-foreground hover:bg-secondary hover:text-foreground">Omite ghidul</button>
+              </div>
+
+              <div className="py-5">
+                <h2 id="tour-title" className="text-lg font-extrabold tracking-tight text-foreground">{tourSteps[tourStep].title}</h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{tourSteps[tourStep].text}</p>
+                {tourSteps[tourStep].action && (
+                  <p className="mt-3 rounded-lg bg-primary/10 px-3 py-2 text-xs font-bold text-primary">{tourSteps[tourStep].action}</p>
+                )}
+              </div>
+
+              <div className="mb-4 flex gap-1.5" aria-label="Progresul ghidului">
+                {tourSteps.map((step, index) => (
+                  <span
+                    key={step.title}
+                    className={`h-1.5 flex-1 rounded-full transition-colors ${index <= tourStep ? "bg-primary" : "bg-secondary"}`}
+                  />
+                ))}
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setTourStep((step) => Math.max(0, step - 1))}
+                  disabled={tourStep === 0}
+                  className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border border-border text-sm font-bold text-foreground hover:bg-secondary disabled:opacity-40"
+                >
+                  <ChevronLeft size={16} /> Înapoi
+                </button>
+                {tourStep === tourSteps.length - 1 && (
+                  <button type="button" onClick={closeTour} className="inline-flex h-10 flex-1 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground hover:bg-primary/90">Încheie</button>
+                )}
+              </div>
+            </motion.section>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

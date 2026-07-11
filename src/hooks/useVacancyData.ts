@@ -97,7 +97,7 @@ export function useVacancyData() {
         const flattened = flattenData(data);
 
         if (flattened.length === 0) {
-          throw new Error('Fișierul de date nu conține vacanțe valide.');
+          throw new Error('Fișierul de date nu conține vacante valide.');
         }
 
         setVacancies(flattened);

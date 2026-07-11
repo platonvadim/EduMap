@@ -3,7 +3,7 @@ import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useStore } from "../store/useStore";
 
-export function SearchBar({ autoFocus }: { autoFocus?: boolean }) {
+export function SearchBar({ autoFocus, placeholder = "Caută instituție, disciplină..." }: { autoFocus?: boolean; placeholder?: string }) {
   const { searchQuery, setSearchQuery } = useStore();
   const ref = useRef<HTMLInputElement>(null);
 
@@ -22,7 +22,7 @@ export function SearchBar({ autoFocus }: { autoFocus?: boolean }) {
         ref={ref}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Caută instituție, disciplină..."
+        placeholder={placeholder}
         aria-label="Caută instituție sau disciplină"
         type="search"
         className="pl-9 pr-8 bg-secondary border-none h-9 text-sm"

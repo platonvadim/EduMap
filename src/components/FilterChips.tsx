@@ -20,7 +20,7 @@ export function FilterChips() {
   const { filters, setFilter } = useStore();
 
   return (
-    <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
+    <div className="flex flex-wrap gap-1.5">
       {CATEGORIES.map((cat) => {
         const isActive = filters.category === cat.id;
         const Icon = cat.icon;

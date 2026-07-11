@@ -10,6 +10,21 @@ export type Vacancy = {
 
 export type DataFile = Record<string, Vacancy[]>;
 
+export type School = {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  type: 'primary_school' | 'gymnasium' | 'lyceum' | 'other_school';
+  district: string | null;
+  locality: string | null;
+  address: string | null;
+  phone: string | null;
+  instruction_language: string | null;
+  students_count: number | null;
+  grades: string[];
+};
+
 export type SpecialtyCategory = 
   | 'matematica'
   | 'limbi'

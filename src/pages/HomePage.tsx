@@ -9,7 +9,7 @@ import { useFuseSearch } from '../hooks/useFuseSearch';
 import { VacancyCard } from '../components/VacancyCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search } from 'lucide-react';
-import { Info } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 export default function HomePage() {
   useVacancyData();
@@ -17,25 +17,21 @@ export default function HomePage() {
   const searchResults = useFuseSearch();
   const stats = useVacancyStats();
 
-  const isSearching = searchQuery.trim().length > 0 || filters.category !== null || filters.institutionType !== null || filters.city !== null;
+  const isSearching = searchQuery.trim().length > 0 || filters.institutionType !== null;
 
   return (
     <Layout>
-      <div className="flex-1 flex relative w-full h-full">
-        <h1 className="sr-only">EduMap Moldova: hartă interactivă a vacanțelor didactice</h1>
+      <Helmet>
+        <title>Hartă Interactivă | EduMap Moldova</title>
+        <meta name="description" content="Explorează harta interactivă a școlilor și locurilor vacante din Moldova. Filtrează după oraș, disciplină și află statistici rapide." />
+      </Helmet>
+      <div className="flex-1 min-h-0 flex relative w-full h-full">
+        <h1 className="sr-only">EduMap Moldova: hartă interactivă a locurilor didactice vacante</h1>
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col relative w-full h-full z-0">
-
-          {/* Floating filter chips — single row scroll */}
-          <div className="absolute top-0 left-0 right-0 px-3 py-2 md:px-5 md:py-3 pointer-events-none z-10">
-            <div className="pointer-events-auto bg-background/85 backdrop-blur-md px-3 py-2 rounded-xl shadow-md border max-w-full overflow-hidden">
-              <FilterChips />
-            </div>
-          </div>
-
+        <div className="flex-1 min-h-0 flex flex-col relative w-full h-full z-0">
 
           {/* Map */}
-          <div className="flex-1 w-full h-full relative">
+          <div className="flex-1 min-h-0 w-full relative">
             {isLoading ? (
               <div className="absolute inset-0 flex items-center justify-center bg-slate-50 dark:bg-slate-900 z-20">
                 <div className="w-full max-w-sm rounded-2xl border border-border/70 bg-card/90 p-5 shadow-lg">
@@ -47,7 +43,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <p className="mt-4 text-sm font-semibold text-foreground">Se încarcă harta și datele</p>
-                  <p className="mt-1 text-xs text-muted-foreground">Pregătim localitățile, filtrele și lista de vacanțe.</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Pregătim localitățile, filtrele și lista locurilor vacante.</p>
                 </div>
               </div>
             ) : dataError ? (
@@ -79,7 +75,7 @@ export default function HomePage() {
                       Rezultate
                     </h2>
                     <p className="text-xs md:text-sm text-muted-foreground">
-                      {searchResults.length} vacanțe găsite
+                      {searchResults.length} locuri vacante găsite
                     </p>
                   </div>
                   <button
@@ -100,7 +96,7 @@ export default function HomePage() {
                   {searchResults.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
                       <Search className="w-10 h-10 mb-3 opacity-25" />
-                      <p className="font-medium">Nicio vacanță găsită</p>
+                      <p className="font-medium">Niciun loc vacant găsit</p>
                       <p className="text-xs mt-1">Încearcă alt termen</p>
                     </div>
                   ) : (

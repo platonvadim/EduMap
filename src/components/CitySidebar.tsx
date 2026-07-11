@@ -44,14 +44,21 @@ function StatBento({
 }
 
 export function CitySidebar() {
-  const { selectedCity, setSelectedCity, vacancies } = useStore();
+  const { selectedCity, selectedInstitution, setSelectedCity, setSelectedInstitution, vacancies } = useStore();
   const [localSearch, setLocalSearch] = useState('');
   const [tab, setTab] = useState('vacancies');
 
   const cityVacancies = useMemo(() => {
     if (!selectedCity) return [];
-    return vacancies.filter(v => v.city === selectedCity);
-  }, [vacancies, selectedCity]);
+    return vacancies.filter(v =>
+      v.city === selectedCity && (!selectedInstitution || v.institution === selectedInstitution)
+    );
+  }, [vacancies, selectedCity, selectedInstitution]);
+
+  const closeSidebar = () => {
+    setSelectedCity(null);
+    setSelectedInstitution(null);
+  };
 
   const filteredVacancies = useMemo(() => {
     if (!localSearch.trim()) return cityVacancies;
@@ -124,7 +131,7 @@ export function CitySidebar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setSelectedCity(null)}
+            onClick={closeSidebar}
             className="absolute inset-0 bg-black/20 backdrop-blur-[2px] z-40 md:hidden"
           />
 
@@ -135,7 +142,7 @@ export function CitySidebar() {
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 260 }}
             style={{ willChange: 'transform' }}
-            className="absolute bottom-0 left-0 right-0 h-[88%] md:h-full md:top-0 md:bottom-auto md:left-auto md:right-0 md:w-[420px] bg-background md:border-l border-t md:border-t-0 rounded-t-2xl md:rounded-none shadow-2xl z-50 flex flex-col"
+            className={`absolute bottom-0 left-0 right-0 h-[88%] border-t bg-background shadow-2xl z-50 flex flex-col rounded-t-2xl md:bottom-4 md:left-auto md:right-4 md:top-4 md:h-[calc(100%-2rem)] md:w-[360px] md:rounded-2xl md:border md:border-border/70 ${selectedInstitution ? 'md:max-h-[540px]' : 'md:max-h-[680px]'}`}
           >
             {/* Drag handle (mobile only) */}
             <div className="md:hidden flex justify-center pt-2.5 pb-1 shrink-0">
@@ -151,18 +158,18 @@ export function CitySidebar() {
                     <div className="w-6 h-6 rounded-lg gradient-bg flex items-center justify-center shrink-0">
                       <MapPin className="w-3.5 h-3.5 text-white" />
                     </div>
-                    <h2 className="text-lg font-bold text-foreground truncate">{selectedCity}</h2>
+                    <h2 className="text-lg font-bold text-foreground truncate">{selectedInstitution || selectedCity}</h2>
                   </div>
                   <p className="text-sm text-muted-foreground pl-8">
                     <span className="font-bold text-primary">{cityVacancies.length}</span>
-                    {' '}vacanțe active
+                    {' '}locuri vacante
                     {cityVacancies[0]?.olsdi && (
                       <span className="ml-1.5 text-[11px] text-muted-foreground/70">· {cityVacancies[0].olsdi}</span>
                     )}
                   </p>
                 </div>
                 <button
-                  onClick={() => setSelectedCity(null)}
+                    onClick={closeSidebar}
                   aria-label="Închide panoul localității"
                   className="p-1.5 rounded-xl hover:bg-secondary text-muted-foreground transition-colors shrink-0"
                 >
@@ -172,7 +179,7 @@ export function CitySidebar() {
 
               {/* Stat bento grid */}
               <div className="grid grid-cols-4 gap-2 mb-4">
-                <StatBento label="Vacanțe"    value={cityVacancies.length}       color="#6366f1" />
+                <StatBento label="Locuri"     value={cityVacancies.length}       color="#6366f1" />
                 <StatBento label="Instituții" value={stats.uniqueInstitutions}   color="#10b981" />
                 <StatBento label="Discipline" value={stats.uniqueSpecialties}    color="#8b5cf6" />
                 <StatBento label={stats.topTypeLabel} value={stats.topTypeCount} color="#f59e0b" />
@@ -217,7 +224,7 @@ export function CitySidebar() {
                     <Input
                       id="city-sidebar-search"
                       placeholder="Caută instituție sau disciplină..."
-                      aria-label="Caută în vacanțele localității"
+                      aria-label="Caută în locurile vacante ale localității"
                       className="pl-9 h-8 text-sm bg-secondary/50 border-transparent focus:border-border rounded-lg"
                       value={localSearch}
                       onChange={e => setLocalSearch(e.target.value)}

@@ -9,6 +9,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MapPin, BookOpen, Building2, GraduationCap, TrendingUp } from 'lucide-react';
 import { truncateLabel } from '../utils/normalize';
+import { Helmet } from 'react-helmet-async';
 
 const CHART_COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#be185d', '#475569', '#0891b2', '#b91c1c'];
 
@@ -97,6 +98,10 @@ export default function InsightsPage() {
     ...item,
     shortName: truncateLabel(item.name, 34),
   }));
+  const topSchools = stats.topSchools.slice(0, 15).map((item) => ({
+    ...item,
+    shortName: truncateLabel(item.name, 34),
+  }));
   const institutionData = stats.institutionData.slice(0, 12).map((item) => ({
     ...item,
     shortName: truncateLabel(item.name, 30),
@@ -118,6 +123,10 @@ export default function InsightsPage() {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Analitică și Deficit Cadre Didactice | EduMap Moldova</title>
+        <meta name="description" content="Statistici și analitică privind deficitul de profesori și cadre didactice în Republica Moldova. Cele mai căutate discipline și raioanele cu cele mai multe locuri vacante." />
+      </Helmet>
       <ScrollArea className="flex-1 bg-background">
         <div className="max-w-7xl mx-auto px-4 md:px-8 pb-16">
 
@@ -142,7 +151,7 @@ export default function InsightsPage() {
             <KpiCard
               label="Cel mai mare deficit"
               value={stats.mostVacanciesCity}
-              sub={`${stats.topCities[0]?.count || 0} vacanțe libere`}
+              sub={`${stats.topCities[0]?.count || 0} locuri vacante`}
               hint="Localitatea cu cele mai multe posturi raportate."
               icon={MapPin}
               color="#dc2626"
@@ -159,7 +168,7 @@ export default function InsightsPage() {
               label="Total Instituții"
               value={stats.totalInstitutions}
               sub="Raportează lipsă cadre"
-              hint="Instituții distincte cu cel puțin o vacanță."
+              hint="Instituții distincte cu cel puțin o vacansie."
               icon={Building2}
               color="#059669"
             />
@@ -177,7 +186,7 @@ export default function InsightsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
 
             {/* Top cities */}
-            <ChartCard title="Top localități cu deficit" description="Cele mai multe vacanțe raportate, ordonate descrescător.">
+            <ChartCard title="Top localități cu deficit" description="Cele mai multe locuri vacante raportate, ordonate descrescător.">
               <div className="h-[380px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
@@ -257,6 +266,35 @@ export default function InsightsPage() {
                     />
                     <RechartsTooltip cursor={{ fill: 'hsl(var(--secondary))' }} contentStyle={TOOLTIP_STYLE} />
                     <Bar dataKey="count" fill="#2563eb" radius={[0, 6, 6, 0]}
+                      label={{ position: 'right', fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </ChartCard>
+
+            {/* Top schools */}
+            <ChartCard title="Instituții cu cel mai mare deficit" description="Școlile cu cele mai multe locuri vacante raportate." className="lg:col-span-2">
+              <div className="h-[480px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={topSchools}
+                    layout="vertical"
+                    margin={{ top: 0, right: 44, left: 164, bottom: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="2 4" horizontal={false} vertical={true} stroke="hsl(var(--border))" />
+                    <XAxis type="number" hide />
+                    <YAxis
+                      dataKey="name"
+                      type="category"
+                      width={160}
+                      tickFormatter={(value) => truncateLabel(String(value), 32)}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <RechartsTooltip cursor={{ fill: 'hsl(var(--secondary))' }} contentStyle={TOOLTIP_STYLE} />
+                    <Bar dataKey="count" fill="#7c3aed" radius={[0, 6, 6, 0]}
                       label={{ position: 'right', fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
                     />
                   </BarChart>
