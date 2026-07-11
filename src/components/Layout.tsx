@@ -150,9 +150,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div className="w-7 h-7 md:w-8 md:h-8 rounded-xl gradient-bg text-white flex items-center justify-center shadow-md shadow-primary/30 shrink-0">
               <Map size={15} strokeWidth={2} />
             </div>
-            <span className="hidden sm:flex items-center gap-1">
-              <span className="gradient-text font-extrabold">EduMap</span>
-              <span className="text-foreground font-semibold">Moldova</span>
+            <span className="flex items-center gap-1">
+              <span className="gradient-text font-extrabold text-[15px] md:text-base">EduMap</span>
+              <span className="text-foreground font-semibold text-[15px] md:text-base hidden sm:inline-block">Moldova</span>
             </span>
           </Link>
 
@@ -289,7 +289,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </AnimatePresence>
 
       {/* ── Content ── */}
-      <main className="flex-1 min-h-0 relative flex overflow-hidden">
+      <main className="flex-1 min-h-0 relative flex overflow-hidden pb-[76px] md:pb-0">
         {children}
       </main>
 
@@ -302,60 +302,75 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* ── Mobile bottom nav ── */}
-      <nav className="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 glass border-t z-50 flex flex-col items-stretch">
+      <nav className="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border/50 z-50 flex flex-col items-stretch pb-safe shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.4)]">
         {/* Disclaimer (mobile) */}
-        <div className="flex items-center justify-center px-3 py-1 border-b border-border/30">
+        <div className="flex items-center justify-center px-3 py-1.5 border-b border-border/30 bg-muted/30">
           <p className="text-[9px] text-muted-foreground text-center leading-tight">
             <span className="text-primary font-semibold">ⓘ</span>
             {' '}Generat cu IA · scop consultativ · datele pot fi incomplete
           </p>
         </div>
-        <div className="flex h-12 items-stretch">
+        <div className="flex h-14 items-stretch px-1 pb-1">
         <Link
           href="/"
           onClick={handleMapClick}
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${
-            location === "/" ? "text-primary" : "text-muted-foreground"
+          className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors z-10 ${
+            location === "/" ? "text-primary" : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          <Map size={19} strokeWidth={location === "/" ? 2.2 : 1.8} />
+          {location === "/" && (
+            <motion.span layoutId="mobile-nav" className="absolute inset-x-2 inset-y-1 bg-primary/10 dark:bg-primary/20 rounded-xl -z-10" />
+          )}
+          <Map size={20} strokeWidth={location === "/" ? 2.5 : 2} />
           Hartă
         </Link>
         <Link
           href="/catalog"
           onClick={() => setSearchQuery("")}
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${
-            location === "/catalog" ? "text-primary" : "text-muted-foreground"
+          className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors z-10 ${
+            location === "/catalog" ? "text-primary" : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          <LibraryBig size={19} strokeWidth={location === "/catalog" ? 2.2 : 1.8} />
+          {location === "/catalog" && (
+            <motion.span layoutId="mobile-nav" className="absolute inset-x-2 inset-y-1 bg-primary/10 dark:bg-primary/20 rounded-xl -z-10" />
+          )}
+          <LibraryBig size={20} strokeWidth={location === "/catalog" ? 2.5 : 2} />
           Catalog
         </Link>
         <Link
           href="/insights"
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${
-            location === "/insights" ? "text-primary" : "text-muted-foreground"
+          className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors z-10 ${
+            location === "/insights" ? "text-primary" : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          <BarChart2 size={19} strokeWidth={location === "/insights" ? 2.2 : 1.8} />
+          {location === "/insights" && (
+            <motion.span layoutId="mobile-nav" className="absolute inset-x-2 inset-y-1 bg-primary/10 dark:bg-primary/20 rounded-xl -z-10" />
+          )}
+          <BarChart2 size={20} strokeWidth={location === "/insights" ? 2.5 : 2} />
           Analytics
         </Link>
         <Link
           href="/surse"
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${
-            location === "/surse" ? "text-primary" : "text-muted-foreground"
+          className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors z-10 ${
+            location === "/surse" ? "text-primary" : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          <Database size={19} strokeWidth={location === "/surse" ? 2.2 : 1.8} />
+          {location === "/surse" && (
+            <motion.span layoutId="mobile-nav" className="absolute inset-x-2 inset-y-1 bg-primary/10 dark:bg-primary/20 rounded-xl -z-10" />
+          )}
+          <Database size={20} strokeWidth={location === "/surse" ? 2.5 : 2} />
           Surse
         </Link>
         <Link
           href="/contact"
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${
-            location === "/contact" ? "text-primary" : "text-muted-foreground"
+          className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors z-10 ${
+            location === "/contact" ? "text-primary" : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          <Mail size={19} strokeWidth={location === "/contact" ? 2.2 : 1.8} />
+          {location === "/contact" && (
+            <motion.span layoutId="mobile-nav" className="absolute inset-x-2 inset-y-1 bg-primary/10 dark:bg-primary/20 rounded-xl -z-10" />
+          )}
+          <Mail size={20} strokeWidth={location === "/contact" ? 2.5 : 2} />
           Contact
         </Link>
         </div>

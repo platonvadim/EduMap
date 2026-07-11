@@ -352,7 +352,7 @@ export function MapView() {
         )}
       </MapContainer>
 
-      <section className="map-control-panel absolute left-3 right-3 z-[1000] max-h-[70dvh] overflow-y-auto overscroll-contain rounded-2xl border border-border/70 bg-background/95 p-2 shadow-xl backdrop-blur-xl md:bottom-auto md:left-3 md:right-auto md:top-6 md:h-fit md:w-64 md:max-h-[calc(100%-3rem)]" aria-label="Filtrele hărții">
+      <section className="map-control-panel absolute left-3 right-3 z-[1000] max-h-[70dvh] overflow-y-auto overscroll-contain rounded-2xl border border-border/70 bg-card/95 p-2.5 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] backdrop-blur-xl md:bottom-auto md:left-3 md:right-auto md:top-6 md:h-fit md:w-64 md:max-h-[calc(100%-3rem)] md:p-2" aria-label="Filtrele hărții">
         <button
           data-tour="map-filter-button"
           type="button"
@@ -389,7 +389,7 @@ export function MapView() {
         <div className="grid grid-cols-2 gap-1 rounded-xl bg-secondary/70 p-1">
           <button
             type="button"
-            className={`rounded-lg px-3 py-2 text-xs font-semibold transition-all ${!showAllSchools ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+            className={`rounded-lg px-3 py-2.5 md:py-2 text-xs font-semibold transition-all ${!showAllSchools ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
             onClick={() => setShowAllSchools(false)}
             aria-pressed={!showAllSchools}
           >
@@ -398,7 +398,7 @@ export function MapView() {
           <button
             data-tour="all-schools"
             type="button"
-            className={`rounded-lg px-3 py-2 text-xs font-semibold transition-all ${showAllSchools ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+            className={`rounded-lg px-3 py-2.5 md:py-2 text-xs font-semibold transition-all ${showAllSchools ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
             onClick={() => setShowAllSchools(true)}
             aria-pressed={showAllSchools}
           >
@@ -416,7 +416,7 @@ export function MapView() {
               setSelectedInstitution(null);
               setSelectedCity(city);
             }}
-            className="mt-1 h-9 w-full rounded-lg border border-border bg-background px-2 text-xs text-foreground"
+            className="mt-1 h-11 md:h-9 w-full rounded-lg border border-border bg-background px-3 md:px-2 text-sm md:text-xs text-foreground"
           >
             <option value="">Toată Moldova</option>
             {cities.map((city) => <option key={city} value={city}>{city}</option>)}
@@ -429,7 +429,7 @@ export function MapView() {
             onClick={() => setDisciplineOpen((open) => !open)}
             aria-expanded={disciplineOpen}
             aria-controls="map-discipline-filters"
-            className="flex h-9 w-full items-center justify-between rounded-lg border border-border/70 bg-background px-2.5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
+            className="flex h-11 md:h-9 w-full items-center justify-between rounded-lg border border-border/70 bg-background px-3 md:px-2.5 text-sm md:text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
           >
             <span className="inline-flex items-center gap-2"><SlidersHorizontal size={14} /> Discipline</span>
             <ChevronUp size={14} className={`transition-transform ${disciplineOpen ? 'rotate-180' : ''}`} />
@@ -448,7 +448,11 @@ export function MapView() {
               return (
                 <label
                   key={type.id}
-                  className={`flex min-h-8 cursor-pointer items-center gap-2 rounded-lg border px-2 py-1.5 text-[11px] font-semibold transition-colors ${checked ? 'border-primary/35 bg-primary/10 text-primary' : 'border-border/60 bg-background text-muted-foreground hover:bg-secondary'}`}
+                  className={`flex h-11 md:h-9 cursor-pointer items-center justify-center rounded-lg border text-sm md:text-xs font-semibold transition-colors ${
+                    checked
+                      ? 'border-primary/50 bg-primary/10 text-primary dark:bg-primary/20'
+                      : 'border-border/60 bg-background text-muted-foreground hover:bg-secondary hover:text-foreground'
+                  }`}
                 >
                   <input
                     type="checkbox"

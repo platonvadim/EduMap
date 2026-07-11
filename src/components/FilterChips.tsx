@@ -32,7 +32,7 @@ export function FilterChips() {
             aria-pressed={isActive}
             aria-label={cat.id ? `Filtrează după ${cat.label}` : "Afișează toate disciplinele"}
             className={[
-              "inline-flex items-center gap-1.5 px-3 h-8 rounded-full text-[12px] font-semibold",
+              "inline-flex items-center gap-1.5 px-3 h-9 md:h-8 rounded-full text-[12px] font-semibold",
               "shrink-0 transition-all duration-150 cursor-pointer",
               isActive
                 ? "bg-primary text-primary-foreground shadow-sm"

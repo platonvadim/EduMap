@@ -46,7 +46,7 @@
 .school-popup button:focus-visible { outline: 3px solid rgba(21, 128, 61, 0.28); outline-offset: 2px; }
 
 .map-control-panel {
-  bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  bottom: 0.75rem;
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--border)) transparent;
 }
@@ -60,7 +60,7 @@
 }
 
 @media (max-width: 767px) {
-  .leaflet-control-zoom { display: none; }
+  .leaflet-control-zoom { display: none !important; }
   .leaflet-control-attribution { margin-bottom: 0.25rem !important; font-size: 8px !important; }
   .leaflet-popup-content-wrapper { border-radius: 14px; }
   .leaflet-popup-content { width: min(72vw, 19rem) !important; margin: 0.9rem; }

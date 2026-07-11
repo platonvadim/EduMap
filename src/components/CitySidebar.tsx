@@ -238,7 +238,7 @@ export function CitySidebar() {
                 </div>
 
                 <ScrollArea className="flex-1">
-                  <div className="flex flex-col gap-2 p-3.5 pb-8">
+                  <div className="flex flex-col gap-2 p-3.5 pb-24">
                     <AnimatePresence initial={false}>
                       {filteredVacancies.map((v, i) => (
                         <motion.div
@@ -265,7 +265,7 @@ export function CitySidebar() {
 
               {/* ── ANALYTICS TAB ── */}
               <TabsContent value="analytics" className="flex-1 overflow-y-auto m-0 p-4 data-[state=active]:block">
-                <div className="space-y-7 pb-8">
+                <div className="space-y-7 pb-24">
                   <div>
                     <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
                       Distribuție Tip Instituție
@@ -350,7 +350,7 @@ export function CitySidebar() {
 
               {/* ── SPECIALTIES TAB ── */}
               <TabsContent value="specialties" className="flex-1 overflow-y-auto m-0 p-4 data-[state=active]:block">
-                <div className="space-y-5 pb-8">
+                <div className="space-y-5 pb-24">
                   {Object.entries(stats.groupedSpecialties).map(([cat, items]) => {
                     const maxCount = items[0]?.count ?? 1;
                     return (
