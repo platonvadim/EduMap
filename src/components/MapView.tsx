@@ -396,6 +396,7 @@ export function MapView() {
             Cu locuri vacante
           </button>
           <button
+            data-tour="all-schools"
             type="button"
             className={`rounded-lg px-3 py-2 text-xs font-semibold transition-all ${showAllSchools ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
             onClick={() => setShowAllSchools(true)}
@@ -479,7 +480,6 @@ export function MapView() {
             <span className="mt-0.5 block text-[9px] leading-tight text-muted-foreground">Școli cu locuri</span>
           </div>
           <button
-            data-tour="all-schools"
             type="button"
             onClick={() => setUnmappedOpen(true)}
             disabled={areaStats.unmappedVacancies.length === 0}

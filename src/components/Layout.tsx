@@ -57,31 +57,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const tourSteps = [
     {
       title: "Deschide filtrele",
-      text: "Apasă elementul evidențiat pentru a începe configurarea hărții.",
+      text: "Apasă aici pentru a deschide panoul de filtre și a explora opțiunile disponibile.",
       selector: "[data-tour='map-filter-button'], [data-tour='discipline-button']",
-      action: "Deschide filtrele hărții",
+      action: "Apasă pe butonul evidențiat",
     },
     {
       title: "Alege o zonă",
-      text: "Deschide lista evidențiată. Alegerea unui oraș va filtra harta și va deschide statistica lui.",
-      selector: "[data-tour='map-filter-button'], [data-tour='city-filter']",
-      action: "Deschide filtrele hărții",
+      text: "Selectează un oraș sau un raion pentru a filtra instantaneu harta și statisticile.",
+      selector: "[data-tour='city-filter']",
+      action: "Deschide lista și alege un oraș",
     },
     {
-      title: "Arată toate școlile",
-      text: "Apasă pentru a include și instituțiile care nu au locuri vacante publicate.",
+      title: "Toate școlile",
+      text: "Comută aici pentru a vizualiza pe hartă și instituțiile care momentan nu au locuri vacante.",
       selector: "[data-tour='all-schools']",
-      action: "Apasă Toate școlile",
+      action: "Apasă pe 'Toate școlile'",
     },
     {
-      title: "Caută direct",
-      text: "Apasă câmpul de căutare. Rezultatele vor fi adaptate paginii în care te afli.",
+      title: "Caută rapid",
+      text: "Folosește căutarea pentru a găsi direct o instituție sau o disciplină specifică.",
       selector: "[data-tour='mobile-search-button'], #site-search",
       action: "Apasă câmpul de căutare",
     },
     {
-      title: "Revino oricând",
-      text: "Poți porni din nou acest ghid folosind butonul cu semnul întrebării din partea de sus.",
+      title: "Ești gata!",
+      text: "Ai descoperit funcțiile de bază. Poți reporni acest ghid oricând de la butonul cu semnul întrebării din meniu.",
       selector: null,
       action: null,
     },
@@ -102,15 +102,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
       });
       setTourTarget(element?.getBoundingClientRect() ?? null);
     };
+    
+    // We update target immediately
     updateTarget();
-    const element = [...document.querySelectorAll(step.selector)].find((candidate) => {
+    
+    // And also wait a tick for React state to flush (e.g. mobile drawer opens)
+    const timer = setTimeout(updateTarget, 100);
+
+    const advance = () => setTourStep((current) => Math.min(current + 1, tourSteps.length - 1));
+    
+    const element = [...document.querySelectorAll(step.selector!)].find((candidate) => {
       const rect = candidate.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0;
     });
-    const advance = () => setTourStep((current) => Math.min(current + 1, tourSteps.length - 1));
+    
     element?.addEventListener('click', advance, { once: true });
     window.addEventListener('resize', updateTarget);
+    
     return () => {
+      clearTimeout(timer);
       element?.removeEventListener('click', advance);
       window.removeEventListener('resize', updateTarget);
     };
@@ -380,15 +390,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="pointer-events-auto fixed w-[min(22rem,calc(100vw-1.5rem))] rounded-2xl border border-border bg-background p-4 shadow-2xl"
+              className={`absolute z-[2000] w-[340px] rounded-2xl bg-card p-5 shadow-2xl ring-1 ring-border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                tourTarget ? "" : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              }`}
               style={tourTarget ? {
                 left: Math.min(Math.max(12, tourTarget.left), Math.max(12, window.innerWidth - 364)),
                 top: tourTarget.bottom + 250 < window.innerHeight ? tourTarget.bottom + 16 : Math.max(12, tourTarget.top - 245),
-              } : {
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-              }}
+              } : {}}
               role="dialog"
               aria-modal="false"
               aria-labelledby="tour-title"

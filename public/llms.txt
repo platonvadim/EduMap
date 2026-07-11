@@ -1,0 +1,12 @@
+# EduMap Moldova
+
+> O hartă interactivă cu locurile vacante din sistemul educațional din Republica Moldova.
+
+EduMap este o platformă dedicată cadrelor didactice, pentru a găsi posturi vacante în școlile, liceele și grădinițele din Moldova. Datele sunt agregate din sursele oficiale ale Ministerului Educației (MEC).
+
+## Structura Datelor
+
+- [Catalogul Vacanțelor (Markdown)](/edumap/catalog.md): O listă completă, text-only, a tuturor posturilor vacante curente grupate pe localități și instituții, gata pentru a fi analizată de asistenții AI.
+
+## Contact și Surse
+- Surse oficiale: https://mec.gov.md
