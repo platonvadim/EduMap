@@ -57,25 +57,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const tourSteps = [
     {
       title: "Deschide filtrele",
-      text: "Apasă aici pentru a deschide panoul de filtre și a explora opțiunile disponibile.",
+      text: "Apasă butonul de filtre (evidențiat pe fundal) pentru a deschide opțiunile. Apoi apasă «Următorul».",
       selector: "[data-tour='map-filter-button'], [data-tour='discipline-button']",
       action: "Apasă pe butonul evidențiat",
     },
     {
       title: "Alege o zonă",
-      text: "Selectează un oraș sau un raion pentru a filtra instantaneu harta și statisticile.",
+      text: "Poți selecta un oraș sau un raion pentru a filtra instantaneu harta și statisticile.",
       selector: "[data-tour='city-filter']",
       action: "Deschide lista și alege un oraș",
     },
     {
       title: "Toate școlile",
-      text: "Comută aici pentru a vizualiza pe hartă și instituțiile care momentan nu au locuri vacante.",
+      text: "Acest buton îți permite să vizualizezi pe hartă și instituțiile care momentan nu au locuri vacante.",
       selector: "[data-tour='all-schools']",
       action: "Apasă pe 'Toate școlile'",
     },
     {
       title: "Caută rapid",
-      text: "Folosește căutarea pentru a găsi direct o instituție sau o disciplină specifică.",
+      text: "Aici poți căuta direct o instituție sau o disciplină specifică.",
       selector: "[data-tour='mobile-search-button'], #site-search",
       action: "Apasă câmpul de căutare",
     },
@@ -111,17 +111,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
     const advance = () => setTourStep((current) => Math.min(current + 1, tourSteps.length - 1));
     
-    const element = [...document.querySelectorAll(step.selector!)].find((candidate) => {
-      const rect = candidate.getBoundingClientRect();
-      return rect.width > 0 && rect.height > 0;
-    });
-    
-    element?.addEventListener('click', advance, { once: true });
     window.addEventListener('resize', updateTarget);
     
     return () => {
       clearTimeout(timer);
-      element?.removeEventListener('click', advance);
       window.removeEventListener('resize', updateTarget);
     };
   }, [tourOpen, tourStep]);
@@ -432,8 +425,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 >
                   <ChevronLeft size={16} /> Înapoi
                 </button>
-                {tourStep === tourSteps.length - 1 && (
-                  <button type="button" onClick={closeTour} className="inline-flex h-10 flex-1 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground hover:bg-primary/90">Încheie</button>
+                {tourStep < tourSteps.length - 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => setTourStep((step) => Math.min(step + 1, tourSteps.length - 1))}
+                    className="inline-flex h-10 flex-1 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground hover:bg-primary/90"
+                  >
+                    Următorul
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={closeTour}
+                    className="inline-flex h-10 flex-1 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground hover:bg-primary/90"
+                  >
+                    Încheie
+                  </button>
                 )}
               </div>
             </motion.section>
