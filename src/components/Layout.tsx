@@ -383,7 +383,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className={`absolute z-[2000] w-[340px] rounded-2xl bg-card p-5 shadow-2xl ring-1 ring-border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              className={`pointer-events-auto absolute z-[2000] w-[340px] rounded-2xl bg-card p-5 shadow-2xl ring-1 ring-border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                 tourTarget ? "" : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
               }`}
               style={tourTarget ? {
